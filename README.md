@@ -10,7 +10,7 @@ summary(diamonds$price>=15000) 总结满足条件的子集数
 
 s[s$state.region==1, Colum]取子集中行满足条件，列满足条件的部分
 str(data)得到data数据里面参数的类型和总类
-names(pf)   pf文件所有列的名称，所有pf可以$的参数
+names()   pf文件所有列的名称，所有pf可以$的参数
 subset(mtcars, mpg>=30 | hp<60) 或者mtcars[mtcars$mpg>=30 |mtcars$hp<60]
 length(unique(pf$price))查看所有不同价格的总数
 table(reddit$employment.status)查看参数下面所有的数据各类的个数
