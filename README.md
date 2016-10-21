@@ -1,6 +1,4 @@
-# andy
- R 学习笔记
-               R 学习笔记
+              R 学习笔记
 
 
 s <- read.csv(‘stateData.csv’)
@@ -10,7 +8,7 @@ summary(diamonds$price>=15000) 总结满足条件的子集数
 
 s[s$state.region==1, Colum]取子集中行满足条件，列满足条件的部分
 str(data)得到data数据里面参数的类型和总类
-names()   pf文件所有列的名称，所有pf可以$的参数
+names(pf)   pf文件所有列的名称，所有pf可以$的参数
 subset(mtcars, mpg>=30 | hp<60) 或者mtcars[mtcars$mpg>=30 |mtcars$hp<60]
 length(unique(pf$price))查看所有不同价格的总数
 table(reddit$employment.status)查看参数下面所有的数据各类的个数
@@ -38,6 +36,8 @@ pf<-filter(pf,!is.na(gender))过滤gender里面NA的部分，等价于data = sub
 数据转换为log10(x), 
 ggplot(aes(x = friend_count), data = pf) + scale_x_log10()
     qplot(x=log10(friend_count),data=pf),默认的y给出关于x的数目的直方图
+如果转换的函数系统没有，可以自定义函数。演示一下定义好的函数，怎么转换
+scale_x_log10()等价于scale_x_continuous(trans=log10_trans()) log10_trans可以自定义函数
 
 频率多边形，把histo的曲线画出来，并显示在一个坐标轴里面
 ggplot(aes(x = friend_count, y = ...), data = subset(pf, !is.na(gender))) +
@@ -196,3 +196,31 @@ ggplot(aes(x=time, y=price),
 
 散点图矩阵：同时显示很多图
 install.packages(“GGally”)
+
+R线性模型
+m1<-lm(I(log(price))~ I(carat^(1/3)), data=diamonds)
+m2<-update(m1,~.+carat)
+m3<-update(m2,~.+cut)
+m4<-update(m3,~.+color)
+m5<-update(m4,~.+clarity)
+mtable(m1,m2,m3,m4,m5)
+残差分析
+dat = data.frame(m4$model, m4$residuals) 
+
+with(dat, sd(m4.residuals)) 
+
+with(subset(dat, carat > .9 & carat < 1.1), sd(m4.residuals)) 
+
+dat$resid <- as.numeric(dat$m4.residuals)
+ggplot(aes(y = resid, x = round(carat, 2)), data = dat) + 
+  geom_line(stat = "summary", fun.y = sd) 
+置信区间
+thisDiamonds=data.frame( carat=1.00, cut="Good",
+                        color="I" ,clarity="VS1")
+    设置置信区间的x值，自变量。包括克拉，切工 颜色和纯净度的确定唯一量。    
+modelEstimate= predict(m5, newdata=thisDiamonds,
+                      interval="prediction", level=.95)
+exp(modelEstimate)
+预测这个自变量对应的y值，估计值以及95%置信区间的上下值。
+
+回归分析入门 （R语言）http://mayvi.blog.163.com/blog/static/200368352201310226952544/
